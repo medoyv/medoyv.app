@@ -150,11 +150,9 @@ function loginPage(error = "", status = 200, extraHeaders = {}) {
   return response(LOGIN_HTML.replace("{{ERROR}}", error), status, headers);
 }
 
-function addSecurityHeaders(assetResponse, pathname) {
+function addSecurityHeaders(assetResponse) {
   const headers = securityHeaders(new Headers(assetResponse.headers));
-  headers.set("Cache-Control", pathname === "/service-worker.js" || /\.(html|js|css|webmanifest)$/.test(pathname)
-    ? "no-cache"
-    : "public, max-age=3600");
+  headers.set("Cache-Control", "private, no-store");
   return new Response(assetResponse.body, {
     status: assetResponse.status,
     statusText: assetResponse.statusText,
@@ -210,6 +208,6 @@ export default {
     if (!await isAuthenticated(request, secret)) return redirect("/login");
 
     const assetResponse = await env.ASSETS.fetch(request);
-    return addSecurityHeaders(assetResponse, pathname);
+    return addSecurityHeaders(assetResponse);
   }
 };
