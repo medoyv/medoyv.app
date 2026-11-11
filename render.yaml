@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: medoyv-app
+    runtime: node
+    plan: free
+    region: frankfurt
+    buildCommand: unzip -o Medoyv.App-deploy.zip -d site && cd site && npm install --omit=dev
+    startCommand: cd site && npm start
+    healthCheckPath: /healthz
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: SITE_PASSWORD
+        sync: false
